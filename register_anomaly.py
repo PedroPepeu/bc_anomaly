@@ -14,13 +14,7 @@ with open('build/contracts/AnomalyEvent.json') as f:
 abi = contract_json['abi']
 contract = web3.eth.contract(address=contract_address, abi=abi)
 
-devices = [
-    { "account": web3.eth.accounts[0], "deviceId": "device-001", "description": "DDoS detected!" },
-    { "account": web3.eth.accounts[1], "deviceId": "device-002", "description": "Malware detected!" },
-    { "account": web3.eth.accounts[2], "deviceId": "device-003", "description": "Unauthorized login attempt!" }
-]
-
-for d in devices:
-    tx = contract.functions.reportAnomaly(d["deviceId"], d["description"]).transact({'from': d["account"]})
+def send_anomaly_to_blockchain(device_account, device_id, description):
+    tx = contract.functions.reportAnomaly(device_id, description).transact({'from': device_account})
     web3.eth.wait_for_transaction_receipt(tx)
-    print(f"Event from {d['deviceId']} registered in the blockchain.")
+    print(f"Event from {device_id} registered in the blockchain.")

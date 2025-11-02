@@ -1,15 +1,17 @@
 from web3 import Web3
 import json
+from dotenv import load_dotenv
+import os
 
-ganache_url = "http://127.0.0.1:7545"
+load_dotenv()
+
+ganache_url = os.getenv("GANACHE_URL")
+contract_address = os.getenv("CONTRACT_ADDRESS")
 web3 = Web3(Web3.HTTPProvider(ganache_url))
 
 with open('build/contracts/AnomalyEvent.json') as f:
     contract_json = json.load(f)
-
 abi = contract_json['abi']
-contract_address = "0x33cdec3fE336c9Aa5918d52bBEfC1551a02CbA61"
-
 contract = web3.eth.contract(address=contract_address, abi=abi)
 
 events_count = contract.functions.getEventsCount().call()
